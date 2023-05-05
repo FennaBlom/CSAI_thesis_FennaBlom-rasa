@@ -1,0 +1,90 @@
+version: "3.1"
+intents:
+- greet
+- goodbye
+- affirm
+- deny
+- mood_great
+- mood_unhappy
+- bot_challenge
+- check_presence
+- add_paper
+- give_category
+- test_database
+entities:
+- categories
+- abstract
+slots:
+  database:
+    type: any
+    initial_value: null
+    influence_conversation: false
+    mappings:
+    - type: custom
+  abstract_text:
+    type: text
+    initial_value: null
+    influence_conversation: false
+    mappings:
+    - entity: abstract
+      type: from_text
+      conditions:
+        - active_loop: add_abstract_form
+          requested_slot: abstract_text
+  category:
+    type: text
+    initial_value: null
+    influence_conversation: false
+    mappings:
+    - entity: categories
+      type: from_text
+      conditions:
+      - active_loop: choose_category_form
+        requested_slot: category
+  all_categories:
+    type: list
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: categories
+responses:
+  utter_greet:
+  - text: Hey! What can I do for you?
+  utter_check:
+  - text: I will check!
+  utter_classification:
+  - text: I am classifying the paper
+  utter_ask_confirmation:
+  - text: Is it correct?
+  utter_goodbye:
+  - text: You may end the chat now.
+  utter_give_paper:
+  - text: Please show me the paper
+  utter_add_to_dataset:
+  - text: I will add it to the dataset
+  utter_ask_category:
+  - text: 'You can choose from: neoplasms, digestive system diseases, nervous system diseases, cardiovascular diseases, and general pathological conditions'
+  utter_different_task:
+  - text: Can I do anything else?
+  utter_which_task:
+  - text: What exactly?
+  utter_please_rephrase:
+  - text: I'm sorry, I didn't quite understand that. Could you rephrase?
+actions:
+- action_link_database
+- action_add_to_database
+- action_reset_category
+- action_reset_abstract
+- action_classify_abstract
+- action_store_all_categories
+- action_name_all_categories
+forms:
+  add_abstract_form:
+    required_slots:
+    - abstract_text    
+  choose_category_form:
+    required_slots:
+    - category
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: false
